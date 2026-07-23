@@ -9,310 +9,504 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box}
-  body{margin:0;font-family:Barlow,Arial,sans-serif;background:#f2f2f2;color:#111}
-  header{background:#111;color:#fff;padding:14px 22px;display:flex;align-items:center;gap:12px}
-  header b{font-family:Barlow,sans-serif;font-weight:800;font-size:20px;letter-spacing:.5px}
-  header span{font-size:14px;color:#bdbdbd}
-  .wrap{display:flex;gap:20px;padding:20px;align-items:flex-start}
-  .panel{width:420px;flex:0 0 420px;background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{flex:1;background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.12);position:sticky;top:20px}
-  h3{font-family:Barlow,sans-serif;font-weight:800;font-size:13px;letter-spacing:1.2px;text-transform:uppercase;color:#FF0303;margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid #eee}
-  h3:first-of-type{margin-top:0}
-  label{display:block;font-size:13px;font-weight:600;color:#444;margin:0 0 4px}
-  input[type=text],textarea,select{width:100%;padding:9px 10px;border:1px solid #d5d5d5;border-radius:6px;font-family:Barlow,sans-serif;font-size:14px;background:#fff}
-  input[type=text]:focus,textarea:focus{outline:none;border-color:#FF0303}
-  textarea{resize:vertical;line-height:1.5}
-  .row{margin-bottom:12px}
-  .two{display:flex;gap:10px}
+  body{margin:0;font-family:Barlow,Arial,sans-serif;background:#eeeeee;color:#111}
+  header{background:#111;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50}
+  header b{font-weight:800;font-size:18px;letter-spacing:.5px}
+  header span{font-size:13px;color:#bbb}
+  .wrap{display:flex;gap:18px;padding:18px;align-items:flex-start}
+  .panel{width:440px;flex:0 0 440px}
+  .card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.12);margin-bottom:14px}
+  .stage{flex:1;background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.12);position:sticky;top:62px}
+  h3{font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#FF0303;margin:0 0 12px;padding-bottom:6px;border-bottom:1px solid #eee}
+  label{display:block;font-size:12px;font-weight:600;color:#555;margin:0 0 4px}
+  input[type=text],select,input[type=search]{width:100%;padding:9px 10px;border:1px solid #d5d5d5;border-radius:6px;font-family:Barlow,sans-serif;font-size:14px;background:#fff;color:#111}
+  input:focus,select:focus{outline:none;border-color:#FF0303}
+  .row{margin-bottom:11px}
+  .two{display:flex;gap:9px}
   .two>div{flex:1}
-  .file{font-size:13px;width:100%}
-  .hint{font-size:12px;color:#888;margin:4px 0 0;line-height:1.4}
-  button{font-family:Barlow,sans-serif;font-weight:600;font-size:14px;padding:10px 16px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer}
-  button:hover{background:#f5f5f5}
-  .primary{background:#FF0303;border-color:#FF0303;color:#fff;font-weight:800;letter-spacing:.5px;width:100%;padding:14px;font-size:16px;text-transform:uppercase}
+  .hint{font-size:11px;color:#999;margin:4px 0 0;line-height:1.4}
+  button{font-family:Barlow,sans-serif;font-weight:600;font-size:13px;padding:8px 12px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer}
+  button:hover{background:#f4f4f4}
+  .primary{background:#FF0303;border-color:#FF0303;color:#fff;font-weight:800;letter-spacing:.5px;width:100%;padding:14px;font-size:15px;text-transform:uppercase}
   .primary:hover{background:#d40202}
-  .mini{padding:6px 10px;font-size:12px}
-  #preview{width:100%;height:auto;border:1px solid #e0e0e0;display:block}
-  .stage p{margin:10px 0 0;font-size:12px;color:#888;text-align:center}
+  .mini{padding:6px 9px;font-size:12px;white-space:nowrap}
+  #preview{width:100%;height:auto;border:1px solid #e2e2e2;display:block}
+  .stage p.cap{margin:9px 0 0;font-size:11px;color:#999;text-align:center}
+
+  /* combobox model */
+  .combo{position:relative}
+  .combo-list{position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid #ccc;border-top:none;
+              border-radius:0 0 6px 6px;max-height:290px;overflow-y:auto;display:none;box-shadow:0 6px 14px rgba(0,0,0,.14)}
+  .combo-list.open{display:block}
+  .combo-list div{padding:8px 11px;font-size:13px;cursor:pointer;border-bottom:1px solid #f2f2f2;line-height:1.3}
+  .combo-list div:hover,.combo-list div.sel{background:#FFF0F0}
+  .combo-list div small{color:#999;display:block;font-size:11px}
+  .combo-list .none{color:#999;cursor:default;font-style:italic}
+
+  /* lista specificatii */
+  .spec{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+  .spec input[type=checkbox]{width:15px;height:15px;flex:0 0 auto;accent-color:#FF0303;cursor:pointer}
+  .spec .lb{flex:0 0 118px;font-size:11px;font-weight:700;color:#333;text-transform:uppercase;line-height:1.15}
+  .spec input[type=text]{flex:1;padding:5px 8px;font-size:12.5px}
+  .spec.off .lb{color:#bbb}
+  .spec.off input[type=text]{background:#fafafa;color:#bbb}
+  .bar{display:flex;gap:7px;margin-bottom:10px}
+  .miss{font-size:11px;color:#c47b00;background:#FFF8E6;border-radius:5px;padding:6px 8px;margin-top:8px;line-height:1.4}
+  .ok{font-size:11px;color:#1a7f4b;background:#EAF7EF;border-radius:5px;padding:6px 8px;margin-top:8px}
 </style>
 </head>
 <body>
 
 <header>
   <b>GENERATOR FIȘE PRODUS</b>
-  <span>completează în stânga → descarcă imaginea</span>
+  <span>alege marca și modelul → bifează ce apare → descarcă</span>
 </header>
 
 <div class="wrap">
   <div class="panel">
 
-    <h3>Antet</h3>
-    <div class="row">
-      <label>Logo brand (PNG cu fundal transparent)</label>
-      <input type="file" id="f-brand" accept="image/*" class="file">
-    </div>
-    <div class="row">
-      <label>Model</label>
-      <input type="text" id="f-model" value="TE 300 PRO">
-    </div>
-    <div class="row">
-      <label>An</label>
-      <input type="text" id="f-an" value="2026">
-    </div>
-
-    <h3>Cod QR</h3>
-    <div class="row">
-      <label>Link produs</label>
-      <input type="text" id="f-qr" value="https://dealer.moto24.ro/">
-      <p class="hint">Codul se desenează singur din link. Dacă preferi unul făcut de tine, încarcă-l mai jos și îl folosește pe acela.</p>
-    </div>
-    <div class="row">
-      <input type="file" id="f-qrimg" accept="image/*" class="file">
-    </div>
-
-    <h3>Specificații</h3>
-    <div class="row">
-      <textarea id="f-spec" rows="6">MOTOR: 2 timpi, 1 cilindru , 293 cmc
-SUSPENSIE: WP XACT
-TRANSMISIE: manuală, 6 rapoarte
-REZERVOR: 9 l
-CULORI: Alb/Gri</textarea>
-      <p class="hint">Un rând = o specificație. Ce scrii înainte de <b>:</b> apare îngroșat.</p>
-    </div>
-
-    <h3>Prețuri</h3>
-    <div class="row two">
-      <div>
-        <label>RRP (€)</label>
-        <input type="text" id="f-rrp" value="12.990">
+    <div class="card">
+      <h3>Produs</h3>
+      <div class="row">
+        <label>Marca</label>
+        <select id="f-marca"><option value="">— alege marca —</option></select>
       </div>
-      <div>
-        <label>Preț (€)</label>
-        <input type="text" id="f-pret" value="12.079">
+      <div class="row combo">
+        <label>Model <span style="color:#999;font-weight:400">(scrie ca să cauți)</span></label>
+        <input type="search" id="f-model-search" placeholder="caută model…" autocomplete="off" disabled>
+        <div class="combo-list" id="combo"></div>
       </div>
-    </div>
-    <div class="row">
-      <label>Preț în LEI</label>
+      <div class="row">
+        <label>Titlu afișat pe fișă</label>
+        <input type="text" id="f-titlu" placeholder="ex. TE 300 PRO">
+      </div>
       <div class="two">
-        <input type="text" id="f-lei" value="64.024">
-        <button class="mini" id="calc" title="Calculează din preț × 5.30">× 5.30</button>
+        <div class="row">
+          <label>An</label>
+          <input type="text" id="f-an" placeholder="2026">
+        </div>
+        <div class="row">
+          <label>Logo marcă</label>
+          <input type="file" id="f-brand" accept="image/*" style="font-size:11px;width:100%">
+        </div>
       </div>
-      <p class="hint">Se scrie manual. Butonul îl calculează la cursul 5.30, dacă vrei.</p>
+      <p class="hint" id="brandhint"></p>
     </div>
 
-    <h3>Poză produs</h3>
-    <div class="row">
-      <input type="file" id="f-poza" accept="image/*" class="file">
-      <p class="hint">Ideal PNG cu fundal transparent.</p>
+    <div class="card">
+      <h3>Specificații — bifează ce apare pe fișă</h3>
+      <div class="bar">
+        <button class="mini" id="all">Bifează tot</button>
+        <button class="mini" id="none">Debifează tot</button>
+        <button class="mini" id="onlyfull">Doar cele completate</button>
+      </div>
+      <div id="specs"></div>
+      <div id="specmsg"></div>
     </div>
 
-    <h3>Descarcă</h3>
-    <div class="row">
+    <div class="card">
+      <h3>Prețuri</h3>
+      <div class="two">
+        <div class="row"><label>RRP (€)</label><input type="text" id="f-rrp" value="12.990"></div>
+        <div class="row"><label>Preț (€)</label><input type="text" id="f-pret" value="12.079"></div>
+      </div>
+      <div class="row">
+        <label>Preț în LEI</label>
+        <div class="two">
+          <input type="text" id="f-lei" value="64.024">
+          <button class="mini" id="calc">× 5.30</button>
+        </div>
+        <p class="hint">Se scrie manual. Butonul calculează la cursul 5.30.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Cod QR și poză</h3>
+      <div class="row">
+        <label>Link produs</label>
+        <input type="text" id="f-qr" placeholder="https://dealer.moto24.ro/...">
+        <p class="hint">Codul QR se desenează singur din link.</p>
+      </div>
+      <div class="row">
+        <label>Sau încarcă un cod QR făcut de tine</label>
+        <input type="file" id="f-qrimg" accept="image/*" style="font-size:11px;width:100%">
+      </div>
+      <div class="row">
+        <label>Poză produs</label>
+        <input type="file" id="f-poza" accept="image/*" style="font-size:11px;width:100%">
+        <p class="hint">Ideal PNG cu fundal transparent.</p>
+      </div>
+    </div>
+
+    <div class="card">
       <button class="primary" id="dl">Descarcă imaginea</button>
-      <p class="hint">Fișier PNG A4, 2480×3508 px — bun de printat.</p>
+      <p class="hint">PNG A4, 2480×3508 px — bun de printat.</p>
     </div>
   </div>
 
   <div class="stage">
     <canvas id="preview" width="1240" height="1754"></canvas>
-    <p>Previzualizare — se actualizează pe măsură ce completezi</p>
+    <p class="cap">Previzualizare — se actualizează în timp real</p>
   </div>
 </div>
 
+<script src="produse.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
-/* ------------------------------------------------------------------
-   LAYOUT — coordonate pe o pagină de 1240 x 1754 px (A4)
-   Modifică aici dacă vrei să muți ceva.
------------------------------------------------------------------- */
+/* =====================================================================
+   LAYOUT — coordonate pe pagina A4 de 1240 x 1754 px.
+   Modifica valorile de aici daca vrei sa muti ceva.
+   ===================================================================== */
 var L = {
-  W: 1240, H: 1754,
-  brand:   {x:320, y:70,  w:600, h:140},
-  model:   {cx:620, y:300, size:92},
-  an:      {cx:620, y:385, size:72},
-  qr:      {x:60,  y:440, size:330},
-  specTag: {x:400, y:448, w:272, h:58, size:38, text:'SPECIFICAȚII'},
-  spec:    {x:400, y:548, size:28, lh:37},
-  rrpLbl:  {x:1180, y:692, size:26},
-  rrpVal:  {x:1180, y:742, size:46},
-  pretLbl: {x:880,  y:778, size:36},
-  hl:      {x1:748, x2:1168, y1:786, y2:868},
-  pretVal: {x:1152, y:854, size:80},
-  tva:     {x:1188, y:884, size:24, text:'TVA inclus'},
-  lei:     {x:1078, y:922, size:42},
-  leiTva:  {x:1186, y:922, size:22, text:'TVA INCLUS'},
-  poza:    {x:60,  y:955, w:1120, h:600},
-  m24:     {x:330, y:1585, w:580, h:130}
+  W:1240, H:1754,
+  brand:  {x:270, y:60,  w:700, h:150},
+  titlu:  {cx:620, y:300, size:92, min:52},
+  an:     {cx:620, y:385, size:70},
+  qr:     {x:60,  y:445, size:330},
+  tag:    {x:430, y:450, h:58, pad:26, size:36, text:'SPECIFICAȚII'},
+  spec:   {x:430, y:548, size:27, lh:36, minlh:24, maxw:760},
+  rrpL:   {x:1180, y:690, size:26},
+  rrpV:   {x:1180, y:742, size:46},
+  pretL:  {size:36, y:778},
+  pretV:  {x:1160, y:854, size:80},
+  tva:    {x:1188, y:886, size:23, text:'TVA inclus'},
+  lei:    {x:1080, y:924, size:42},
+  leiT:   {x:1188, y:924, size:21, text:'TVA INCLUS'},
+  poza:   {x:50,  y:960, w:1140, h:600},
+  m24:    {x:330, y:1585, w:580, h:130}
 };
-var RED = '#FF0303', BLACK = '#111111', YELLOW = '#FFE81A';
+var RED='#FF0303', BLACK='#111111', YELLOW='#FFE81A';
 
+var D = window.M24 || {specs:[], marci:[], produse:[]};
 var imgs = {brand:null, qr:null, poza:null, m24:null};
-var qrDataUrl = null;
+var current = null;
 
 function $(id){ return document.getElementById(id); }
-function val(id){ return $(id).value; }
+function val(id){ var e=$(id); return e ? e.value : ''; }
 
-/* ---------- helpers de desen ---------- */
-function txt(c, s, x, y, size, weight, color, align, family){
-  c.font = weight + ' ' + size + 'px ' + (family || 'Barlow') + ', Arial, sans-serif';
-  c.fillStyle = color;
-  c.textAlign = align || 'left';
-  c.textBaseline = 'alphabetic';
-  c.fillText(s, x, y);
+/* ---------------------------------------------------- desen pe canvas */
+function txt(c,s,x,y,size,weight,color,align){
+  c.font = weight+' '+size+'px Barlow, Arial, sans-serif';
+  c.fillStyle = color; c.textAlign = align||'left'; c.textBaseline='alphabetic';
+  c.fillText(s,x,y);
   return c.measureText(s).width;
 }
-
-function contain(c, img, x, y, w, h){
-  if(!img) return;
-  var r = Math.min(w / img.width, h / img.height);
-  var dw = img.width * r, dh = img.height * r;
-  c.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+function meas(c,s,size,weight){
+  c.font = weight+' '+size+'px Barlow, Arial, sans-serif';
+  return c.measureText(s).width;
 }
-
-function marker(c, x1, y1, x2, y2){
+function contain(c,img,x,y,w,h){
+  if(!img) return;
+  var r = Math.min(w/img.width, h/img.height);
+  var dw = img.width*r, dh = img.height*r;
+  c.drawImage(img, x+(w-dw)/2, y+(h-dh)/2, dw, dh);
+}
+function marker(c,x1,y1,x2,y2){
   c.fillStyle = YELLOW;
   c.beginPath();
-  c.moveTo(x1 + 4, y1 + 6);
-  c.lineTo(x2 - 10, y1);
-  c.lineTo(x2, y1 + 9);
-  c.lineTo(x2 - 6, y2 - 4);
-  c.lineTo(x1 + 12, y2);
-  c.lineTo(x1, y2 - 12);
-  c.closePath();
-  c.fill();
+  c.moveTo(x1+4,y1+6); c.lineTo(x2-10,y1); c.lineTo(x2,y1+9);
+  c.lineTo(x2-6,y2-4); c.lineTo(x1+12,y2); c.lineTo(x1,y2-12);
+  c.closePath(); c.fill();
 }
 
-/* ---------- desenul paginii ---------- */
-function draw(c, s){
-  c.save();
-  c.scale(s, s);
+function activeSpecs(){
+  var out = [];
+  D.specs.forEach(function(s){
+    var cb = $('cb-'+s.k), tx = $('tx-'+s.k);
+    if(cb && cb.checked && tx && tx.value.trim()){
+      out.push({l:s.l, v:tx.value.trim()});
+    }
+  });
+  return out;
+}
 
+function draw(c, sc){
+  c.save();
+  c.scale(sc,sc);
   c.fillStyle = '#ffffff';
-  c.fillRect(0, 0, L.W, L.H);
+  c.fillRect(0,0,L.W,L.H);
 
   contain(c, imgs.brand, L.brand.x, L.brand.y, L.brand.w, L.brand.h);
 
-  txt(c, val('f-model'), L.model.cx, L.model.y, L.model.size, '800', BLACK, 'center');
-  txt(c, val('f-an'),    L.an.cx,    L.an.y,    L.an.size,    '400', BLACK, 'center');
+  /* titlu — se micsoreaza daca e prea lung */
+  var t = val('f-titlu') || '';
+  var ts = L.titlu.size;
+  while(ts > L.titlu.min && meas(c,t,ts,'800') > 1080) ts -= 2;
+  txt(c, t, L.titlu.cx, L.titlu.y, ts, '800', BLACK, 'center');
+  txt(c, val('f-an'), L.an.cx, L.an.y, L.an.size, '400', BLACK, 'center');
 
   if(imgs.qr) contain(c, imgs.qr, L.qr.x, L.qr.y, L.qr.size, L.qr.size);
 
-  var t = L.specTag;
+  /* eticheta SPECIFICATII — latime dupa text */
+  var tw = meas(c, L.tag.text, L.tag.size, '800') + L.tag.pad*2;
   c.fillStyle = BLACK;
-  c.fillRect(t.x, t.y, t.w, t.h);
-  txt(c, t.text, t.x + t.w / 2, t.y + t.h - 15, t.size, '800', '#ffffff', 'center');
+  c.fillRect(L.tag.x, L.tag.y, tw, L.tag.h);
+  txt(c, L.tag.text, L.tag.x + tw/2, L.tag.y + L.tag.h - 15, L.tag.size, '800', '#ffffff', 'center');
 
-  var lines = val('f-spec').split('\n');
-  for(var i = 0; i < lines.length; i++){
-    var line = lines[i];
-    if(!line.trim()) continue;
-    var y = L.spec.y + i * L.spec.lh;
-    var p = line.indexOf(':');
-    if(p > -1){
-      var w = txt(c, line.slice(0, p + 1), L.spec.x, y, L.spec.size, '700', BLACK, 'left', 'Barlow');
-      txt(c, line.slice(p + 1), L.spec.x + w + 8, y, L.spec.size, '400', BLACK, 'left', 'Barlow');
-    } else {
-      txt(c, line, L.spec.x, y, L.spec.size, '400', BLACK, 'left', 'Barlow');
-    }
+  /* lista de specificatii — se stramteaza daca sunt multe */
+  var list = activeSpecs();
+  var sz = L.spec.size, lh = L.spec.lh;
+  var avail = L.poza.y - L.spec.y - 90;
+  while(list.length*lh > avail && lh > L.spec.minlh){ lh -= 1; sz = Math.max(19, sz-0.6); }
+  for(var i=0;i<list.length;i++){
+    var y = L.spec.y + i*lh;
+    var lw = txt(c, list[i].l+':', L.spec.x, y, sz, '700', BLACK);
+    var v = list[i].v, vs = sz;
+    while(meas(c,v,vs,'400') > L.spec.maxw - lw - 10 && vs > 15) vs -= 0.5;
+    txt(c, v, L.spec.x + lw + 9, y, vs, '400', BLACK);
   }
 
-  txt(c, 'RRP', L.rrpLbl.x, L.rrpLbl.y, L.rrpLbl.size, '400', BLACK, 'right', 'Barlow');
-  txt(c, val('f-rrp') + ' €', L.rrpVal.x, L.rrpVal.y, L.rrpVal.size, '800', RED, 'right');
+  /* preturi */
+  txt(c, 'RRP', L.rrpL.x, L.rrpL.y, L.rrpL.size, '400', BLACK, 'right');
+  txt(c, val('f-rrp')+' €', L.rrpV.x, L.rrpV.y, L.rrpV.size, '800', RED, 'right');
 
-  var pretTxt = val('f-pret') + ' €';
-  c.font = '800 ' + L.pretVal.size + 'px Barlow, Arial, sans-serif';
-  var pretW = c.measureText(pretTxt).width;
-  txt(c, 'Preț', L.pretVal.x - pretW - 12, L.pretLbl.y, L.pretLbl.size, '700', BLACK, 'right', 'Barlow');
-  marker(c, L.pretVal.x - pretW - 26, L.hl.y1, L.pretVal.x + 16, L.hl.y2);
-  txt(c, pretTxt, L.pretVal.x, L.pretVal.y, L.pretVal.size, '800', BLACK, 'right');
-  txt(c, L.tva.text, L.tva.x, L.tva.y, L.tva.size, '600', RED, 'right', 'Barlow');
+  var pv = val('f-pret')+' €';
+  var pw = meas(c, pv, L.pretV.size, '800');
+  txt(c, 'Preț', L.pretV.x - pw - 12, L.pretL.y, L.pretL.size, '700', BLACK, 'right');
+  marker(c, L.pretV.x - pw - 28, L.pretV.y - 68, L.pretV.x + 16, L.pretV.y + 14);
+  txt(c, pv, L.pretV.x, L.pretV.y, L.pretV.size, '800', BLACK, 'right');
+  txt(c, L.tva.text, L.tva.x, L.tva.y, L.tva.size, '600', RED, 'right');
 
-  txt(c, val('f-lei') + ' LEI', L.lei.x, L.lei.y, L.lei.size, '800', BLACK, 'right');
-  txt(c, L.leiTva.text, L.leiTva.x, L.leiTva.y, L.leiTva.size, '600', BLACK, 'right', 'Barlow');
+  txt(c, val('f-lei')+' LEI', L.lei.x, L.lei.y, L.lei.size, '800', BLACK, 'right');
+  txt(c, L.leiT.text, L.leiT.x, L.leiT.y, L.leiT.size, '600', BLACK, 'right');
 
   contain(c, imgs.poza, L.poza.x, L.poza.y, L.poza.w, L.poza.h);
   contain(c, imgs.m24,  L.m24.x,  L.m24.y,  L.m24.w,  L.m24.h);
-
   c.restore();
 }
 
-function render(){
-  var cv = $('preview');
-  draw(cv.getContext('2d'), 1);
+function render(){ draw($('preview').getContext('2d'), 1); }
+
+/* ------------------------------------------------------- specificatii */
+function buildSpecRows(){
+  var box = $('specs');
+  box.innerHTML = '';
+  D.specs.forEach(function(s){
+    var d = document.createElement('div');
+    d.className = 'spec off';
+    d.id = 'sp-'+s.k;
+    d.innerHTML = '<input type="checkbox" id="cb-'+s.k+'">' +
+                  '<span class="lb">'+s.l+'</span>' +
+                  '<input type="text" id="tx-'+s.k+'" placeholder="—">';
+    box.appendChild(d);
+    $('cb-'+s.k).addEventListener('change', function(){ syncRow(s.k); render(); });
+    $('tx-'+s.k).addEventListener('input', function(){
+      if(this.value.trim() && !$('cb-'+s.k).checked){ $('cb-'+s.k).checked = true; syncRow(s.k); }
+      render();
+    });
+  });
+}
+function syncRow(k){
+  $('sp-'+k).className = 'spec' + ($('cb-'+k).checked ? '' : ' off');
+}
+function setAll(v){
+  D.specs.forEach(function(s){
+    var tx = $('tx-'+s.k);
+    $('cb-'+s.k).checked = v === 'full' ? !!tx.value.trim() : v;
+    syncRow(s.k);
+  });
+  render();
 }
 
-/* ---------- cod QR ---------- */
+/* ------------------------------------------------------ marca / model */
+function fillBrands(){
+  var sel = $('f-marca');
+  D.marci.forEach(function(m){
+    var n = D.produse.filter(function(p){ return p.m === m.k; }).length;
+    var o = document.createElement('option');
+    o.value = m.k; o.textContent = m.n + '  (' + n + ')';
+    sel.appendChild(o);
+  });
+}
+
+var EXT = ['.webp', '.png', '.jpg', '.jpeg', '.svg'];
+
+/* incearca pe rand extensiile, pana gaseste fisierul */
+function tryLoad(base, exts, ok, fail){
+  var i = 0;
+  (function next(){
+    if(i >= exts.length){ fail && fail(); return; }
+    var im = new Image();
+    im.onload = function(){ ok(im); };
+    im.onerror = function(){ i++; next(); };
+    im.src = base + exts[i];
+  })();
+}
+
+function loadBrandLogo(key){
+  imgs.brand = null;
+  $('brandhint').textContent = '';
+  if(!key){ render(); return; }
+  tryLoad('logo/' + key, EXT,
+    function(im){ imgs.brand = im; render(); },
+    function(){
+      imgs.brand = null;
+      $('brandhint').textContent = 'Lipsește logo/' + key + ' (.webp sau .png) — încarcă-l manual din câmpul de mai sus.';
+      render();
+    });
+}
+
+var comboItems = [], comboIdx = -1;
+
+function modelsFor(brand){
+  return D.produse.filter(function(p){ return p.m === brand; });
+}
+
+function openCombo(filter){
+  var box = $('combo');
+  var brand = $('f-marca').value;
+  if(!brand){ box.classList.remove('open'); return; }
+  var f = (filter||'').toLowerCase().trim();
+  var list = modelsFor(brand).filter(function(p){
+    return !f || p.n.toLowerCase().indexOf(f) > -1;
+  }).slice(0, 300);
+  comboItems = list; comboIdx = -1;
+  box.innerHTML = '';
+  if(!list.length){
+    box.innerHTML = '<div class="none">niciun model găsit</div>';
+  } else {
+    list.forEach(function(p, i){
+      var d = document.createElement('div');
+      var nspec = Object.keys(p.s).length;
+      d.innerHTML = p.n + '<small>' + p.c + ' · ' + nspec + ' specificații</small>';
+      d.addEventListener('mousedown', function(e){ e.preventDefault(); pick(i); });
+      box.appendChild(d);
+    });
+  }
+  box.classList.add('open');
+}
+function closeCombo(){ $('combo').classList.remove('open'); }
+
+function pick(i){
+  var p = comboItems[i];
+  if(!p) return;
+  current = p;
+  $('f-model-search').value = p.n;
+  closeCombo();
+
+  /* titlu: numele fara " - 2026" de la final */
+  $('f-titlu').value = p.n.replace(/\s*[-–]\s*20\d\d\s*$/, '').trim();
+  $('f-an').value = p.a || '';
+
+  var got = 0;
+  D.specs.forEach(function(s){
+    var v = p.s[s.k] || '';
+    $('tx-'+s.k).value = v;
+    $('cb-'+s.k).checked = !!v;
+    syncRow(s.k);
+    if(v) got++;
+  });
+
+  var msg = $('specmsg');
+  var missing = D.specs.filter(function(s){ return !p.s[s.k]; }).map(function(s){ return s.l; });
+  if(missing.length){
+    msg.innerHTML = '<div class="miss"><b>' + got + ' din ' + D.specs.length + ' completate.</b><br>' +
+                    'Lipsesc: ' + missing.join(', ').toLowerCase() + '. Le poți scrie manual.</div>';
+  } else {
+    msg.innerHTML = '<div class="ok">Toate cele ' + D.specs.length + ' specificațiile au fost găsite.</div>';
+  }
+  render();
+}
+
+/* ---------------------------------------------------------- cod QR */
 function buildQR(){
   if($('f-qrimg').files.length) return;
   var link = val('f-qr').trim();
   if(!link || typeof qrcode === 'undefined'){ imgs.qr = null; render(); return; }
   try{
-    var q = qrcode(0, 'M');
-    q.addData(link);
-    q.make();
+    var q = qrcode(0,'M'); q.addData(link); q.make();
     var im = new Image();
     im.onload = function(){ imgs.qr = im; render(); };
-    im.src = q.createDataURL(10, 0);
+    im.src = q.createDataURL(10,0);
   } catch(e){ imgs.qr = null; render(); }
 }
 
-/* ---------- upload imagini ---------- */
-function hookFile(inputId, key, after){
-  $(inputId).addEventListener('change', function(){
+/* -------------------------------------------------------- fisiere */
+function hookFile(id, key){
+  $(id).addEventListener('change', function(){
     var f = this.files[0];
     if(!f){ imgs[key] = null; render(); return; }
     var r = new FileReader();
     r.onload = function(e){
       var im = new Image();
-      im.onload = function(){ imgs[key] = im; render(); if(after) after(); };
+      im.onload = function(){ imgs[key] = im; render(); };
       im.src = e.target.result;
     };
     r.readAsDataURL(f);
   });
 }
-hookFile('f-brand', 'brand');
-hookFile('f-poza', 'poza');
-hookFile('f-qrimg', 'qr');
 
-/* ---------- evenimente ---------- */
-['f-model','f-an','f-spec','f-rrp','f-pret','f-lei'].forEach(function(id){
+/* ------------------------------------------------------------- init */
+buildSpecRows();
+fillBrands();
+hookFile('f-brand','brand');
+hookFile('f-poza','poza');
+hookFile('f-qrimg','qr');
+
+$('f-marca').addEventListener('change', function(){
+  loadBrandLogo(this.value);
+  var s = $('f-model-search');
+  s.value = ''; s.disabled = !this.value;
+  s.placeholder = this.value ? 'caută model…' : 'alege întâi marca';
+  current = null;
+  closeCombo();
+});
+$('f-model-search').addEventListener('input', function(){ openCombo(this.value); });
+$('f-model-search').addEventListener('focus', function(){ openCombo(this.value); });
+$('f-model-search').addEventListener('blur', function(){ setTimeout(closeCombo, 120); });
+$('f-model-search').addEventListener('keydown', function(e){
+  var box = $('combo');
+  if(!box.classList.contains('open')) return;
+  var divs = box.querySelectorAll('div:not(.none)');
+  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+    e.preventDefault();
+    comboIdx += (e.key === 'ArrowDown' ? 1 : -1);
+    if(comboIdx < 0) comboIdx = divs.length-1;
+    if(comboIdx >= divs.length) comboIdx = 0;
+    for(var i=0;i<divs.length;i++) divs[i].className = (i===comboIdx?'sel':'');
+    if(divs[comboIdx]) divs[comboIdx].scrollIntoView({block:'nearest'});
+  } else if(e.key === 'Enter'){
+    e.preventDefault();
+    if(comboIdx > -1) pick(comboIdx);
+  } else if(e.key === 'Escape'){ closeCombo(); }
+});
+
+$('all').addEventListener('click', function(){ setAll(true); });
+$('none').addEventListener('click', function(){ setAll(false); });
+$('onlyfull').addEventListener('click', function(){ setAll('full'); });
+
+['f-titlu','f-an','f-rrp','f-pret','f-lei'].forEach(function(id){
   $(id).addEventListener('input', render);
 });
 $('f-qr').addEventListener('input', buildQR);
 
 $('calc').addEventListener('click', function(){
-  var n = parseFloat(val('f-pret').replace(/\./g, '').replace(',', '.'));
+  var n = parseFloat(val('f-pret').replace(/\./g,'').replace(',','.'));
   if(isNaN(n)) return;
-  var lei = Math.round(n * 5.30);
-  $('f-lei').value = lei.toLocaleString('de-DE');
+  $('f-lei').value = Math.round(n*5.30).toLocaleString('de-DE');
   render();
 });
 
 $('dl').addEventListener('click', function(){
   var s = 2;
   var out = document.createElement('canvas');
-  out.width = L.W * s; out.height = L.H * s;
+  out.width = L.W*s; out.height = L.H*s;
   draw(out.getContext('2d'), s);
   var a = document.createElement('a');
-  a.download = (val('f-model') || 'oferta').replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase() + '.png';
+  a.download = ((val('f-titlu')||'fisa') + '-' + (val('f-an')||''))
+                 .replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'').toLowerCase() + '.png';
   a.href = out.toDataURL('image/png');
   a.click();
 });
 
-/* ---------- logo Moto24 (fix) ---------- */
-var M24_LOGO = 'moto24-logo.png';
-if(M24_LOGO){
-  var lg = new Image();
-  lg.onload = function(){ imgs.m24 = lg; render(); };
-  lg.src = M24_LOGO;
-}
+/* logo Moto24 — fix, acelasi pe toate fisele */
+tryLoad('moto24-logo', EXT, function(im){ imgs.m24 = im; render(); });
 
 if(document.fonts && document.fonts.ready){
-  document.fonts.ready.then(function(){ render(); buildQR(); });
-} else {
-  render(); buildQR();
+  document.fonts.ready.then(function(){ render(); });
 }
-setTimeout(function(){ render(); buildQR(); }, 600);
+render();
+setTimeout(render, 700);
 </script>
 </body>
 </html>
