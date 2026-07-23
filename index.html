@@ -171,7 +171,7 @@ var L = {
   pretV:  {x:1160, y:854, size:80},
   tva:    {x:1188, y:886, size:23, text:'TVA inclus'},
   lei:    {x:1080, y:924, size:42},
-  leiT:   {x:1188, y:924, size:21, text:'TVA INCLUS'},
+  leiT:   {x:1188, y:924, size:21, gap:10, text:'TVA INCLUS'},
   poza:   {x:50,  y:960, w:1140, h:600},
   m24:    {x:330, y:1585, w:580, h:130}
 };
@@ -228,8 +228,8 @@ function draw(c, sc){
 
   contain(c, imgs.brand, L.brand.x, L.brand.y, L.brand.w, L.brand.h);
 
-  /* titlu — se micsoreaza daca e prea lung */
-  var t = val('f-titlu') || '';
+  /* titlu — mereu cu majuscule, se micsoreaza daca e prea lung */
+  var t = (val('f-titlu') || '').toUpperCase();
   var ts = L.titlu.size;
   while(ts > L.titlu.min && meas(c,t,ts,'800') > 1080) ts -= 2;
   txt(c, t, L.titlu.cx, L.titlu.y, ts, '800', BLACK, 'center');
@@ -250,7 +250,7 @@ function draw(c, sc){
   while(list.length*lh > avail && lh > L.spec.minlh){ lh -= 1; sz = Math.max(19, sz-0.6); }
   for(var i=0;i<list.length;i++){
     var y = L.spec.y + i*lh;
-    var lw = txt(c, list[i].l+':', L.spec.x, y, sz, '700', BLACK);
+    var lw = txt(c, list[i].l.toUpperCase()+':', L.spec.x, y, sz, '700', BLACK);
     var v = list[i].v, vs = sz;
     while(meas(c,v,vs,'400') > L.spec.maxw - lw - 10 && vs > 15) vs -= 0.5;
     txt(c, v, L.spec.x + lw + 9, y, vs, '400', BLACK);
@@ -267,8 +267,10 @@ function draw(c, sc){
   txt(c, pv, L.pretV.x, L.pretV.y, L.pretV.size, '800', BLACK, 'right');
   txt(c, L.tva.text, L.tva.x, L.tva.y, L.tva.size, '600', RED, 'right');
 
-  txt(c, val('f-lei')+' LEI', L.lei.x, L.lei.y, L.lei.size, '800', BLACK, 'right');
+  /* LEI + "TVA INCLUS" — grup aliniat la dreapta, ca sa nu se suprapuna niciodata */
+  var tvaW = meas(c, L.leiT.text, L.leiT.size, '600');
   txt(c, L.leiT.text, L.leiT.x, L.leiT.y, L.leiT.size, '600', BLACK, 'right');
+  txt(c, val('f-lei')+' LEI', L.leiT.x - tvaW - L.leiT.gap, L.lei.y, L.lei.size, '800', BLACK, 'right');
 
   contain(c, imgs.poza, L.poza.x, L.poza.y, L.poza.w, L.poza.h);
   contain(c, imgs.m24,  L.m24.x,  L.m24.y,  L.m24.w,  L.m24.h);
