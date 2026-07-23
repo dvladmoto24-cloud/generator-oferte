@@ -107,9 +107,17 @@
     <div class="card">
       <h3>Prețuri</h3>
       <div class="two">
-        <div class="row"><label>RRP (€)</label><input type="text" id="f-rrp" value="12.990"></div>
+        <div class="row">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" id="f-rrp-on" checked
+                   style="width:15px;height:15px;accent-color:#FF0303;cursor:pointer;margin:0">
+            RRP (€)
+          </label>
+          <input type="text" id="f-rrp" value="12.990">
+        </div>
         <div class="row"><label>Preț (€)</label><input type="text" id="f-pret" value="12.079"></div>
       </div>
+      <p class="hint" id="rrphint">Debifează RRP dacă produsul nu are preț promoțional — dispare de pe fișă.</p>
       <div class="row">
         <label>Preț în LEI</label>
         <div class="two">
@@ -257,8 +265,11 @@ function draw(c, sc){
   }
 
   /* preturi */
-  txt(c, 'RRP', L.rrpL.x, L.rrpL.y, L.rrpL.size, '400', BLACK, 'right');
-  txt(c, val('f-rrp')+' €', L.rrpV.x, L.rrpV.y, L.rrpV.size, '800', RED, 'right');
+  /* RRP — se deseneaza doar daca bifa e activa */
+  if($('f-rrp-on').checked){
+    txt(c, 'RRP', L.rrpL.x, L.rrpL.y, L.rrpL.size, '400', BLACK, 'right');
+    txt(c, val('f-rrp')+' €', L.rrpV.x, L.rrpV.y, L.rrpV.size, '800', RED, 'right');
+  }
 
   var pv = val('f-pret')+' €';
   var pw = meas(c, pv, L.pretV.size, '800');
@@ -480,6 +491,19 @@ $('onlyfull').addEventListener('click', function(){ setAll('full'); });
 ['f-titlu','f-an','f-rrp','f-pret','f-lei'].forEach(function(id){
   $(id).addEventListener('input', render);
 });
+
+/* bifa RRP — dezactiveaza si campul, ca sa fie clar ca nu apare pe fisa */
+function syncRRP(){
+  var on = $('f-rrp-on').checked;
+  $('f-rrp').disabled = !on;
+  $('f-rrp').style.background = on ? '#fff' : '#f4f4f4';
+  $('f-rrp').style.color = on ? '#111' : '#bbb';
+  $('rrphint').textContent = on
+    ? 'Debifează RRP dacă produsul nu are preț promoțional — dispare de pe fișă.'
+    : 'RRP ascuns — pe fișă apare doar prețul.';
+  render();
+}
+$('f-rrp-on').addEventListener('change', syncRRP);
 $('f-qr').addEventListener('input', buildQR);
 
 $('calc').addEventListener('click', function(){
