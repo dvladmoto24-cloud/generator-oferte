@@ -142,7 +142,9 @@
       <div class="row">
         <label>Poză produs</label>
         <input type="file" id="f-poza" accept="image/*" style="font-size:11px;width:100%">
-        <p class="hint">Ideal PNG cu fundal transparent.</p>
+        <p class="hint">Se ia automat de pe site. Încarcă un fișier doar dacă vrei alta.</p>
+        <p class="hint" id="pozamsg"></p>
+        <button class="mini" id="poza-reset" style="margin-top:6px">Revino la poza de pe site</button>
       </div>
     </div>
 
@@ -418,7 +420,59 @@ function pick(i){
   } else {
     msg.innerHTML = '<div class="ok">Toate cele ' + D.specs.length + ' specificațiile au fost găsite.</div>';
   }
+
+  /* preturi din catalog */
+  if(p.r){ $('f-rrp').value = p.r; }
+  if(p.f){ $('f-pret').value = p.f; }
+  /* RRP se ascunde singur daca nu exista reducere */
+  var areRed = p.r && p.f && p.r !== p.f;
+  $('f-rrp-on').checked = !!areRed;
+  syncRRP();
+  if(p.f){ recalcLei(); }
+
+  /* link produs -> cod QR */
+  if(p.u){ $('f-qr').value = D.domeniu + p.u; buildQR(); }
+
+  /* poza de pe site */
+  if(!$('f-poza').files.length){ loadPoza(p.p ? D.domeniu + p.p : ''); }
+
   render();
+}
+
+/* ------------------------------------------------- poza automata de pe site */
+var pozaAuto = null;
+function loadPoza(url){
+  imgs.poza = null; pozaAuto = null;
+  setPozaMsg('');
+  if(!url){ render(); return; }
+  var im = new Image();
+  im.crossOrigin = 'anonymous';          // necesar ca poza sa poata fi si descarcata
+  im.onload = function(){
+    imgs.poza = im; pozaAuto = url;
+    setPozaMsg('<span style="color:#1a7f4b">Poza încărcată automat de pe site.</span>');
+    render();
+  };
+  im.onerror = function(){
+    /* serverul nu trimite antetul CORS — o afisam doar in previzualizare */
+    var im2 = new Image();
+    im2.onload = function(){
+      imgs.poza = im2; pozaAuto = null;
+      setPozaMsg('<b>Poza se vede, dar nu poate fi descărcată</b> (serverul nu permite). ' +
+                 'Încarc-o manual din câmpul de mai sus, sau vezi nota din README.');
+      render();
+    };
+    im2.onerror = function(){ setPozaMsg('Poza nu a putut fi încărcată de pe site.'); render(); };
+    im2.src = url;
+  };
+  im.src = url;
+}
+function setPozaMsg(h){
+  var e = $('pozamsg'); if(e) e.innerHTML = h;
+}
+function recalcLei(){
+  var n = parseFloat(val('f-pret').replace(/\./g,'').replace(',','.'));
+  if(isNaN(n)) return;
+  $('f-lei').value = Math.round(n*5.30).toLocaleString('de-DE');
 }
 
 /* ---------------------------------------------------------- cod QR */
@@ -518,11 +572,28 @@ $('dl').addEventListener('click', function(){
   var out = document.createElement('canvas');
   out.width = L.W*s; out.height = L.H*s;
   draw(out.getContext('2d'), s);
+  var url;
+  try {
+    url = out.toDataURL('image/png');
+  } catch(e){
+    /* canvas "contaminat" de o poza fara antet CORS */
+    setPozaMsg('<b style="color:#c0392b">Descărcarea a eșuat din cauza pozei luate de pe site.</b> ' +
+               'Încarcă poza manual din câmpul de mai sus și încearcă din nou.');
+    alert('Poza preluată de pe site nu permite descărcarea (restricție de securitate a browserului).\n\n' +
+          'Încarcă poza manual din câmpul "Poză produs" și apasă din nou Descarcă.');
+    return;
+  }
   var a = document.createElement('a');
   a.download = ((val('f-titlu')||'fisa') + '-' + (val('f-an')||''))
                  .replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'').toLowerCase() + '.png';
-  a.href = out.toDataURL('image/png');
+  a.href = url;
   a.click();
+});
+
+/* revenire la poza de pe site dupa o incarcare manuala */
+$('poza-reset').addEventListener('click', function(){
+  $('f-poza').value = '';
+  if(current) loadPoza(current.p ? D.domeniu + current.p : '');
 });
 
 /* logo Moto24 — fix, acelasi pe toate fisele */
