@@ -238,11 +238,24 @@ function draw(c, sc){
 
   contain(c, imgs.brand, L.brand.x, L.brand.y, L.brand.w, L.brand.h);
 
-  /* titlu — mereu cu majuscule, se micsoreaza daca e prea lung */
+  /* titlu — majuscule; se micsoreaza, iar daca tot nu incape trece pe 2 randuri */
   var t = (val('f-titlu') || '').toUpperCase();
-  var ts = L.titlu.size;
-  while(ts > L.titlu.min && meas(c,t,ts,'800') > 1080) ts -= 2;
-  txt(c, t, L.titlu.cx, L.titlu.y, ts, '800', BLACK, 'center');
+  var MAXW = 1080, ts = L.titlu.size;
+  while(ts > L.titlu.min && meas(c,t,ts,'800') > MAXW) ts -= 2;
+  if(meas(c,t,ts,'800') <= MAXW){
+    txt(c, t, L.titlu.cx, L.titlu.y, ts, '800', BLACK, 'center');
+  } else {
+    /* imparte in 2 randuri echilibrate pe cuvinte */
+    var w = t.split(' '), best=t, rest='', i;
+    for(i=1;i<w.length;i++){
+      var a=w.slice(0,i).join(' '), b=w.slice(i).join(' ');
+      if(Math.abs(a.length-b.length) < Math.abs(best.length-rest.length) || rest===''){ best=a; rest=b; }
+    }
+    var s2 = L.titlu.size;
+    while(s2 > 40 && (meas(c,best,s2,'800')>MAXW || meas(c,rest,s2,'800')>MAXW)) s2 -= 2;
+    txt(c, best, L.titlu.cx, L.titlu.y-38, s2, '800', BLACK, 'center');
+    txt(c, rest, L.titlu.cx, L.titlu.y+28, s2, '800', BLACK, 'center');
+  }
   txt(c, val('f-an'), L.an.cx, L.an.y, L.an.size, '400', BLACK, 'center');
 
   if(imgs.qr) contain(c, imgs.qr, L.qr.x, L.qr.y, L.qr.size, L.qr.size);
@@ -576,11 +589,13 @@ $('dl').addEventListener('click', function(){
   try {
     url = out.toDataURL('image/png');
   } catch(e){
-    /* canvas "contaminat" de o poza fara antet CORS */
-    setPozaMsg('<b style="color:#c0392b">Descărcarea a eșuat din cauza pozei luate de pe site.</b> ' +
-               'Încarcă poza manual din câmpul de mai sus și încearcă din nou.');
-    alert('Poza preluată de pe site nu permite descărcarea (restricție de securitate a browserului).\n\n' +
-          'Încarcă poza manual din câmpul "Poză produs" și apasă din nou Descarcă.');
+    /* canvas "contaminat" de o poza fara antet CORS — descarcarea din script e blocata,
+       DAR click-dreapta pe previzualizare merge (salveaza browserul, nu scriptul) */
+    setPozaMsg('<b style="color:#c0392b">Pentru descărcare: click dreapta pe previzualizarea din dreapta → ' +
+               '„Salvează imaginea ca..." („Save image as...").</b>');
+    alert('Poza de pe site nu permite descărcarea prin buton (restricție a browserului).\n\n' +
+          'DESCARCĂ AȘA: click dreapta pe previzualizarea mare din dreapta → „Salvează imaginea ca..." ' +
+          '(„Save image as...").\n\nSau încarcă poza manual din câmpul „Poză produs" și apasă din nou Descarcă.');
     return;
   }
   var a = document.createElement('a');
