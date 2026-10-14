@@ -122,9 +122,9 @@
         <label>Preț în LEI</label>
         <div class="two">
           <input type="text" id="f-lei" value="64.024">
-          <button class="mini" id="calc">× 5.30</button>
+          <button class="mini" id="calc">× 5.35</button>
         </div>
-        <p class="hint">Se scrie manual. Butonul calculează la cursul 5.30.</p>
+        <p class="hint">Se scrie manual. Butonul calculează la cursul 5.35.</p>
       </div>
     </div>
 
@@ -485,7 +485,7 @@ function setPozaMsg(h){
 function recalcLei(){
   var n = parseFloat(val('f-pret').replace(/\./g,'').replace(',','.'));
   if(isNaN(n)) return;
-  $('f-lei').value = Math.round(n*5.30).toLocaleString('de-DE');
+  $('f-lei').value = Math.round(n*5.35).toLocaleString('de-DE');
 }
 
 /* ---------------------------------------------------------- cod QR */
@@ -576,7 +576,7 @@ $('f-qr').addEventListener('input', buildQR);
 $('calc').addEventListener('click', function(){
   var n = parseFloat(val('f-pret').replace(/\./g,'').replace(',','.'));
   if(isNaN(n)) return;
-  $('f-lei').value = Math.round(n*5.30).toLocaleString('de-DE');
+  $('f-lei').value = Math.round(n*5.35).toLocaleString('de-DE');
   render();
 });
 
