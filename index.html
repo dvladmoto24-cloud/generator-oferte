@@ -435,8 +435,10 @@ function pick(i){
   }
 
   /* preturi din catalog */
-  if(p.r){ $('f-rrp').value = p.r; }
-  if(p.f){ $('f-pret').value = p.f; }
+  /* golim campurile cand produsul n-are pret, ca sa nu ramana pretul produsului anterior */
+  $('f-rrp').value = p.r || '';
+  $('f-pret').value = p.f || '';
+  if(!p.f){ $('f-lei').value = ''; }
   /* RRP se ascunde singur daca nu exista reducere */
   var areRed = p.r && p.f && p.r !== p.f;
   $('f-rrp-on').checked = !!areRed;
